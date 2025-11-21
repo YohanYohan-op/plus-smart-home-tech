@@ -1,7 +1,5 @@
 package ru.yandex.practicum.service.handler.sensor;
 
-package ru.yandex.practicum.service.handler.sensor;
-
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.grpc.telemetry.event.LightSensorProto;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
