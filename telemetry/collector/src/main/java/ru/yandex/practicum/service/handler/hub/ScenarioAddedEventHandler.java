@@ -1,15 +1,15 @@
 package ru.yandex.practicum.service.handler.hub;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioAddedEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioConditionProto.ValueCase;
 import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
-import ru.yandex.practicum.model.enums.HubEventType;
-import ru.yandex.practicum.model.hub.HubEvent;
-import ru.yandex.practicum.model.hub.scenario.ScenarioAddedEvent;
 import ru.yandex.practicum.service.KafkaEventProducer;
 
 import java.util.stream.Collectors;
@@ -24,25 +24,26 @@ public class ScenarioAddedEventHandler extends BaseHubEventHandler<ScenarioAdded
     }
 
     @Override
-    public HubEventType getMessageType() {
-        return HubEventType.SCENARIO_ADDED;
+    public HubEventProto.PayloadCase getMessageType() {
+        return HubEventProto.PayloadCase.SCENARIO_ADDED;
     }
 
     @Override
-    protected ScenarioAddedEventAvro mapToAvro(HubEvent event) {
-        ScenarioAddedEvent _event = (ScenarioAddedEvent) event;
+    protected ScenarioAddedEventAvro mapToAvro(HubEventProto event) {
+        ScenarioAddedEventProto _event = event.getScenarioAdded();
 
         return ScenarioAddedEventAvro.newBuilder()
                 .setName(_event.getName())
-                .setConditions(_event.getConditions().stream()
+                .setConditions(_event.getConditionList().stream()
                         .map(condition -> ScenarioConditionAvro.newBuilder()
                                 .setSensorId(condition.getSensorId())
                                 .setType(ConditionTypeAvro.valueOf(condition.getType().name()))
                                 .setOperation(ConditionOperationAvro.valueOf(condition.getOperation().name()))
-                                .setValue(condition.getValue())
+                                .setValue(condition.getValueCase().equals(ValueCase.BOOL_VALUE) ?
+                                        condition.getBoolValue() : condition.getIntValue())
                                 .build())
                         .collect(Collectors.toList()))
-                .setActions(_event.getActions().stream()
+                .setActions(_event.getActionList().stream()
                         .map(action -> DeviceActionAvro.newBuilder()
                                 .setSensorId(action.getSensorId())
                                 .setType(ActionTypeAvro.valueOf(action.getType().name()))
