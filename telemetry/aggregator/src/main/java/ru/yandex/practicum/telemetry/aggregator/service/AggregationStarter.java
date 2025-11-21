@@ -73,7 +73,7 @@ public class AggregationStarter {
             while (true) {
                 ConsumerRecords<String, SensorEventAvro> records = consumer.poll(consumerConfig.getPollTimeout());
 
-                if(!records.isEmpty()) {
+                if (!records.isEmpty()) {
                     int count = 0;
                     for (ConsumerRecord<String, SensorEventAvro> record : records) {
                         log.trace("Обрабатываю сообщение от хаба {} из партиции {} со смещением: {}",
@@ -117,7 +117,7 @@ public class AggregationStarter {
         Optional<SensorsSnapshotAvro> updatedState = snapshotService.updateState(event);
 
         // Если состояние было обновлено, отправляем его в топик снэпшотов
-        if(updatedState.isPresent()) {
+        if (updatedState.isPresent()) {
             SensorsSnapshotAvro sensorsSnapshot = updatedState.get();
 
             log.info("Событие датчика {} обновило состояние снапшота. " +
@@ -154,9 +154,9 @@ public class AggregationStarter {
                 new OffsetAndMetadata(record.offset() + 1)
         );
 
-        if(count % 200 == 0) {
+        if (count % 200 == 0) {
             consumer.commitAsync(currentOffsets, (offsets, exception) -> {
-                if(exception != null) {
+                if (exception != null) {
                     log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
                 }
             });
