@@ -38,13 +38,13 @@ public class SnapshotServiceImpl implements SnapshotService {
 
         // Если для данного устройства уже были получены данные ранее,
         // то проверяем изменяют ли новые данные старое состояние
-        if(sensorsState.containsKey(event.getId())) {
+        if (sensorsState.containsKey(event.getId())) {
             SensorStateAvro oldState = sensorsState.get(event.getId());
             // если таймстемп у нового события раньше, чем таймстемп текущего состояния,
             // или данные нового события ничего не меняют по сравнению с текущими данными,
             // то игнорируем новое событие и ничего не обновляем
-            if(oldState.getTimestamp().isAfter(event.getTimestamp()) ||
-               oldState.getData().equals(event.getPayload())) {
+            if (oldState.getTimestamp().isAfter(event.getTimestamp()) ||
+                oldState.getData().equals(event.getPayload())) {
                 return Optional.empty();
             }
         }
