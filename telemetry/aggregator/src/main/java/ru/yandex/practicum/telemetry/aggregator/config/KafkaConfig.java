@@ -11,7 +11,6 @@ import java.util.Properties;
 @Getter
 @AllArgsConstructor
 @ConfigurationProperties("aggregator.kafka")
-
 public class KafkaConfig {
     private final ProducerConfig producer;
     private final ConsumerConfig consumer;
