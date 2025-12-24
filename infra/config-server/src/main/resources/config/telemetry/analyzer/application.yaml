@@ -2,9 +2,9 @@ spring:
   #Db connection
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/telemetry
-    username: postgres
-    password: telemetry
+    url: jdbc:postgresql://localhost:5432/analyzer_db
+    username: analyzer_app
+    password: Pa$$word
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties.hibernate:
