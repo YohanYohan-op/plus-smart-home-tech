@@ -1,4 +1,7 @@
--- создаём таблицу scenarios
+CREATE USER analyzer_app WITH PASSWORD 'Pa$$word';
+CREATE DATABASE analyzer_db;
+GRANT ALL PRIVILEGES ON DATABASE analyzer_db TO analyzer_app;
+
 CREATE TABLE IF NOT EXISTS scenarios (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     hub_id VARCHAR,
@@ -6,13 +9,11 @@ CREATE TABLE IF NOT EXISTS scenarios (
     UNIQUE(hub_id, name)
 );
 
--- создаём таблицу sensors
 CREATE TABLE IF NOT EXISTS sensors (
     id VARCHAR PRIMARY KEY,
     hub_id VARCHAR
 );
 
--- создаём таблицу conditions
 CREATE TABLE IF NOT EXISTS conditions (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     type VARCHAR,
@@ -20,14 +21,12 @@ CREATE TABLE IF NOT EXISTS conditions (
     value INTEGER
 );
 
--- создаём таблицу actions
 CREATE TABLE IF NOT EXISTS actions (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     type VARCHAR,
     value INTEGER
 );
 
--- создаём таблицу scenario_conditions, связывающую сценарий, датчик и условие активации сценария
 CREATE TABLE IF NOT EXISTS scenario_conditions (
     scenario_id BIGINT REFERENCES scenarios(id),
     sensor_id VARCHAR REFERENCES sensors(id),
@@ -35,7 +34,6 @@ CREATE TABLE IF NOT EXISTS scenario_conditions (
     PRIMARY KEY (scenario_id, sensor_id, condition_id)
 );
 
--- создаём таблицу scenario_actions, связывающую сценарий, датчик и действие, которое нужно выполнить при активации сценария
 CREATE TABLE IF NOT EXISTS scenario_actions (
     scenario_id BIGINT REFERENCES scenarios(id),
     sensor_id VARCHAR REFERENCES sensors(id),
@@ -67,3 +65,5 @@ CREATE OR REPLACE TRIGGER tr_bi_scenario_actions_hub_id_check
 BEFORE INSERT ON scenario_actions
 FOR EACH ROW
 EXECUTE FUNCTION check_hub_id();
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO analyzer_app;
