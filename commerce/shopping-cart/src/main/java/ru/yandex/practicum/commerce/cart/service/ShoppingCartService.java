@@ -42,6 +42,7 @@ public class ShoppingCartService {
         return shoppingCartMapper.toShoppingCartDto(shoppingCart);
     }
 
+    @Transactional
     public void deleteCart(String username) {
         validateUsername(username);
         ShoppingCart shoppingCart = getActiveShoppingCart(username);
@@ -83,6 +84,7 @@ public class ShoppingCartService {
                 .orElseGet(() -> createNewShoppingCart(username));
     }
 
+    @Transactional
     private void updateProductQuantity(ShoppingCart shoppingCart, UUID productId, int quantityChange) {
         shoppingCart.getProducts().merge(productId, quantityChange, (current, change) -> {
             int updatedQuantity = current + change;
@@ -96,6 +98,7 @@ public class ShoppingCartService {
         }
     }
 
+    @Transactional
     private ShoppingCart createNewShoppingCart(String username) {
         log.debug("Creating new shopping cart by user: {}", username);
         ShoppingCart cart = ShoppingCart.builder()

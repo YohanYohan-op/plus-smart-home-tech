@@ -3,6 +3,7 @@ package ru.yandex.practicum.commerce.warehouse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.commerce.api.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.api.warehouse.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.commerce.api.warehouse.dto.AddressDto;
@@ -30,6 +31,7 @@ public class WarehouseService {
     private static final String[] ADDRESSES = new String[] {"ADDRESS_1", "ADDRESS_2"};
     private static final String CURRENT_ADDRESS = ADDRESSES[Random.from(new SecureRandom()).nextInt(0, 1)];
 
+    @Transactional
     public void addProduct(NewProductInWarehouseRequest request) {
         warehouseRepository.findById(request.getProductId())
                 .ifPresent(warehouseProduct -> {
@@ -60,6 +62,7 @@ public class WarehouseService {
                 bookedProducts.getDeliveryVolume(), bookedProducts.getFragile());
     }
 
+    @Transactional
     public void addProductQuantity(AddProductToWarehouseRequest request) {
         WarehouseProduct warehouseProduct = findWarehouseProductById(request.getProductId());
         warehouseProduct.setQuantity(request.getQuantity());

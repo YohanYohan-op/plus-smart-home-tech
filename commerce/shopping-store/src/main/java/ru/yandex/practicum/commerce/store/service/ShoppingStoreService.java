@@ -78,6 +78,7 @@ public class ShoppingStoreService {
         return productMapper.toProductDto(product);
     }
 
+    @Transactional
     private void updateProductFields(Product product, ProductDto productDto) {
         if (productDto.getProductName() != null) {
             product.setProductName(productDto.getProductName());
