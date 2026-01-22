@@ -3,17 +3,41 @@ spring:
     gateway:
       discovery.locator.enabled: true
       routes:
-        - id: shopping_cart_circuitbreaker_route
+        - id: shopping_cart_route
           uri: lb://shopping-cart
           predicates:
             - Path=/shopping-cart/**
           filters:
-            - CircuitBreaker=myCircuitBreaker
-        - id: shopping_store_circuitbreaker_route
+            - PrefixPath=/api/v1
+        - id: shopping_store_route
           uri: lb://shopping-store
           predicates:
             - Path=/shopping-store/**
           filters:
-            - CircuitBreaker=myCircuitBreaker
+            - PrefixPath=/api/v1
+        - id: warehouse_service_route
+          uri: lb://shopping-cart
+          predicates:
+            - Path=/warehouse/**
+          filters:
+            - PrefixPath=/api/v1
+        - id: order_service_route
+          uri: lo://order
+          predicates:
+            - Path=/order/**
+          filters:
+            - PrefixPath=/api/v1
+        - id: delivery_service_route
+          uri: lo://delivery
+          predicates:
+            - Path=/delivery/**
+          filters:
+            - PrefixPath=/api/v1
+        - id: payment_service_route
+          uri: lo://payment
+          predicates:
+            - Path=/payment/**
+          filters:
+            - PrefixPath=/api/v1
 server:
   port: 8080

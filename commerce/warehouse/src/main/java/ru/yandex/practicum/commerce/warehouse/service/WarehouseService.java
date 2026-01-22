@@ -11,13 +11,15 @@ import ru.yandex.practicum.commerce.api.warehouse.dto.BookedProductsDto;
 import ru.yandex.practicum.commerce.api.warehouse.dto.NewProductInWarehouseRequest;
 import ru.yandex.practicum.commerce.warehouse.entity.BookedProducts;
 import ru.yandex.practicum.commerce.warehouse.entity.WarehouseProduct;
-import ru.yandex.practicum.commerce.warehouse.exception.NoSpecifiedProductInWarehouseException;
-import ru.yandex.practicum.commerce.warehouse.exception.ProductInShoppingCartLowQuantityInWarehouse;
-import ru.yandex.practicum.commerce.warehouse.exception.SpecifiedProductAlreadyInWarehouseException;
+import ru.yandex.practicum.commerce.api.exception.warehouse.NoSpecifiedProductInWarehouseException;
+import ru.yandex.practicum.commerce.api.exception.warehouse.ProductInShoppingCartLowQuantityInWarehouse;
+import ru.yandex.practicum.commerce.api.exception.warehouse.SpecifiedProductAlreadyInWarehouseException;
 import ru.yandex.practicum.commerce.warehouse.mapper.WarehouseMapper;
 import ru.yandex.practicum.commerce.warehouse.repository.WarehouseRepository;
 
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -71,6 +73,18 @@ public class WarehouseService {
 
     public AddressDto getWarehouseAddress() {
         return new AddressDto(CURRENT_ADDRESS, CURRENT_ADDRESS, CURRENT_ADDRESS, CURRENT_ADDRESS, CURRENT_ADDRESS);
+    }
+
+    @Transactional
+    public void returnProductsToWarehouse(Map<UUID, Long> products) {
+        List<WarehouseProduct> warehouseProducts = warehouseRepository.findAllById(products.keySet());
+        if(warehouseProducts.isEmpty()) {
+            return;
+        }
+        warehouseProducts.forEach(warehouseProduct ->
+                warehouseProduct.setQuantity(warehouseProduct.getQuantity() +
+                                             products.get(warehouseProduct.getProductId())));
+        warehouseRepository.saveAll(warehouseProducts);
     }
 
     private WarehouseProduct findWarehouseProductById(UUID productId) {

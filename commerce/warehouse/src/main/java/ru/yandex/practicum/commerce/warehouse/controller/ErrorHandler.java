@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.commerce.warehouse.exception.InternalServerErrorException;
-import ru.yandex.practicum.commerce.warehouse.exception.NoSpecifiedProductInWarehouseException;
-import ru.yandex.practicum.commerce.warehouse.exception.ProductInShoppingCartLowQuantityInWarehouse;
-import ru.yandex.practicum.commerce.warehouse.exception.SpecifiedProductAlreadyInWarehouseException;
+import ru.yandex.practicum.commerce.api.exception.warehouse.InternalServerErrorException;
+import ru.yandex.practicum.commerce.api.exception.warehouse.NoSpecifiedProductInWarehouseException;
+import ru.yandex.practicum.commerce.api.exception.warehouse.ProductInShoppingCartLowQuantityInWarehouse;
+import ru.yandex.practicum.commerce.api.exception.warehouse.SpecifiedProductAlreadyInWarehouseException;
 
 import java.util.List;
 

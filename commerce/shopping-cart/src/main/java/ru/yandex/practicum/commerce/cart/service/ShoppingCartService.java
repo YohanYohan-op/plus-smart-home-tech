@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.commerce.api.cart.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.commerce.api.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.cart.entity.ShoppingCart;
-import ru.yandex.practicum.commerce.cart.exception.NoProductsInShoppingCartException;
-import ru.yandex.practicum.commerce.cart.exception.NotAuthorizedUserException;
+import ru.yandex.practicum.commerce.api.exception.shoppingcart.NoProductsInShoppingCartException;
+import ru.yandex.practicum.commerce.api.exception.shoppingcart.NotAuthorizedUserException;
 import ru.yandex.practicum.commerce.cart.mapper.ShoppingCartMapper;
 import ru.yandex.practicum.commerce.cart.repository.ShoppingCartRepository;
 

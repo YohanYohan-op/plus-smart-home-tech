@@ -7,7 +7,7 @@ import jakarta.ws.rs.InternalServerErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.commerce.store.exception.ProductNotFoundException;
+import ru.yandex.practicum.commerce.api.exception.shoppingstore.ProductNotFoundException;
 
 @Component
 @Slf4j
