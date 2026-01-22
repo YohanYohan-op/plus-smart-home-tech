@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.commerce.cart.exception.CartNotFoundException;
-import ru.yandex.practicum.commerce.cart.exception.NoProductsInShoppingCartException;
-import ru.yandex.practicum.commerce.cart.exception.NotAuthorizedUserException;
-import ru.yandex.practicum.commerce.cart.exception.ProductNotAvailableException;
+import ru.yandex.practicum.commerce.api.exception.shoppingcart.CartNotFoundException;
+import ru.yandex.practicum.commerce.api.exception.shoppingcart.NoProductsInShoppingCartException;
+import ru.yandex.practicum.commerce.api.exception.shoppingcart.NotAuthorizedUserException;
+import ru.yandex.practicum.commerce.api.exception.shoppingcart.ProductNotAvailableException;
 
 import java.util.List;
 

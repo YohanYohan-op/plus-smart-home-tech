@@ -12,4 +12,16 @@ CREATE TABLE IF NOT EXISTS warehouse (
     quantity   INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS orders (
+    order_id UUID PRIMARY KEY,
+    delivery_id UUID DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS order_products (
+    order_id UUID REFERENCES orders(order_id),
+    product_id UUID,
+    quantity INTEGER,
+    PRIMARY KEY(order_id, product_id)
+);
+
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO warehouse_app;

@@ -11,7 +11,7 @@ import ru.yandex.practicum.commerce.api.store.dto.enums.ProductCategory;
 import ru.yandex.practicum.commerce.api.store.dto.enums.ProductState;
 import ru.yandex.practicum.commerce.api.store.dto.enums.QuantityState;
 import ru.yandex.practicum.commerce.store.entity.Product;
-import ru.yandex.practicum.commerce.store.exception.ProductNotFoundException;
+import ru.yandex.practicum.commerce.api.exception.shoppingstore.ProductNotFoundException;
 import ru.yandex.practicum.commerce.store.mapper.ProductMapper;
 import ru.yandex.practicum.commerce.store.repository.ProductRepository;
 
