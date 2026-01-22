@@ -28,6 +28,7 @@ public class DeliveryService {
     private final OrderClient orderClient;
     private final WarehouseClient warehouseClient;
 
+    @Transactional
     public DeliveryDto addDelivery(DeliveryDto newDelivery) {
         DeliveryEntity delivery = deliveryMapper.toEntity(newDelivery);
         delivery.setDeliveryState(DeliveryState.CREATED);
@@ -63,29 +64,50 @@ public class DeliveryService {
     }
 
     public BigDecimal getDeliveryCost(OrderDto order) {
-        DeliveryEntity delivery = deliveryRepository.findById(order.deliveryId())
-                .orElseThrow(() -> new NoDeliveryFoundException("Not found delivery with id=" + order.deliveryId()));
+        log.info("Starting delivery cost calculation for orderId: {}, deliveryId: {}",
+                order.orderId(), order.deliveryId());
 
-        double cost = 5.0;
+        DeliveryEntity delivery = deliveryRepository.findById(order.deliveryId())
+                .orElseThrow(() -> {
+                    log.error("Delivery not found for order. OrderId: {}, DeliveryId: {}",
+                            order.orderId(), order.deliveryId());
+                    return new NoDeliveryFoundException("Not found delivery with id=" + order.deliveryId());
+                });
+
+        BigDecimal cost = BigDecimal.valueOf(5.0);
         AddressDto warehouseAddress = warehouseClient.getWarehouseAddress();
+
+        log.debug("Warehouse city: {}, street: {}, orderId: {}",
+                warehouseAddress.getCity(), warehouseAddress.getStreet(), order.orderId());
+        log.debug("Delivery address: {}", delivery.getToAddress());
+
         if (warehouseAddress.getCity().contains("ADDRESS_1")) {
-            cost *= 2;
+            cost = cost.multiply(BigDecimal.valueOf(2));
+            log.debug("If contains ADDRESS_1, cost: {}, coefficient: {}, orderId: {}", cost, 2, order.orderId());
         }
         if (warehouseAddress.getCity().contains("ADDRESS_2")) {
-            cost *= 3;
+            cost = cost.multiply(BigDecimal.valueOf(3));
+            log.debug("If contains ADDRESS_2, cost: {}, coefficient: {}, orderId: {}", cost, 3, order.orderId());
         }
         if (order.fragile()) {
-            cost *= 1.2;
+            cost = cost.multiply(BigDecimal.valueOf(1.2));
+            log.debug("Order is fragile, cost: {}, coefficient: {}, orderId: {}", cost, 1.2, order.orderId());
         }
 
-        cost += order.deliveryWeight() * 0.3;
-        cost += order.deliveryVolume() * 0.2;
+        cost = cost.add(BigDecimal.valueOf(order.deliveryWeight() * 0.3));
+        log.debug("Calculated with weight: {} , cost = {}, coefficient: {}, orderId: {}",
+                order.deliveryWeight(), cost, 0.3, order.orderId());
+
+        cost = cost.add(BigDecimal.valueOf(order.deliveryVolume() * 0.2));
+        log.debug("Calculated with volume: {} , cost = {}, coefficient: {}, orderId: {}", order.deliveryVolume(), cost, 0.2, order.orderId());
 
         if (!warehouseAddress.getStreet().equals(delivery.getToAddress().getStreet())) {
-            cost *= 1.2;
+            cost = cost.multiply(BigDecimal.valueOf(1.2));
+            log.debug("Cost where delivery near warehouse: {}, coefficient: {}, orderId: {}", cost, 1.2, order.orderId());
         }
+        log.info("Delivery final cost calculated: {} for orderId: {}, deliveryId: {}", cost, order.orderId(), order.deliveryId());
 
-        return BigDecimal.valueOf(cost).setScale(2, RoundingMode.UP);
+        return cost.setScale(2, RoundingMode.UP);
     }
 
     private DeliveryEntity checkAndGetDelivery(UUID deliveryId) {
